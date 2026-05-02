@@ -1,0 +1,145 @@
+type _ImmutableObjectStorageRefillResult = 
+ record {
+   success: opt bool;
+   topped_up_amount: opt nat;
+ };
+type _ImmutableObjectStorageRefillInformation = record {
+                                                  proposed_top_up_amount:
+                                                   opt nat;};
+type _ImmutableObjectStorageCreateCertificateResult = 
+ record {
+   blob_hash: text;
+   method: text;
+ };
+type VerificationStatus = 
+ variant {
+   approved;
+   pending;
+   rejected;
+ };
+type UserRole = 
+ variant {
+   admin;
+   buyer;
+   seller;
+ };
+type UserProfile = 
+ record {
+   createdAt: Timestamp;
+   email: text;
+   name: text;
+   "principal": UserId;
+   role: UserRole;
+ };
+type UserId = principal;
+type Timestamp = int;
+type SellerProfile = 
+ record {
+   businessName: text;
+   createdAt: Timestamp;
+   description: text;
+   sellerId: UserId;
+   verificationStatus: VerificationStatus;
+ };
+type ProductStatus = 
+ variant {
+   approved;
+   pending;
+   rejected;
+ };
+type ProductId = nat;
+type ProductCategory = 
+ variant {
+   Beauty;
+   Books;
+   Electronics;
+   Fashion;
+   Home;
+   Others;
+   Sports;
+ };
+type Product = 
+ record {
+   category: ProductCategory;
+   createdAt: Timestamp;
+   description: text;
+   id: ProductId;
+   image: ExternalBlob;
+   price: nat;
+   quantity: nat;
+   sellerId: UserId;
+   status: ProductStatus;
+   title: text;
+ };
+type OrderStatus = 
+ variant {
+   cancelled;
+   delivered;
+   pending;
+   processing;
+   shipped;
+ };
+type OrderItem = 
+ record {
+   priceSnapshot: nat;
+   productId: ProductId;
+   quantity: nat;
+ };
+type OrderId = nat;
+type Order = 
+ record {
+   buyerId: UserId;
+   createdAt: Timestamp;
+   deliveryAddress: text;
+   id: OrderId;
+   items: vec OrderItem;
+   status: OrderStatus;
+   total: nat;
+ };
+type ExternalBlob = blob;
+service : {
+  _immutableObjectStorageBlobsAreLive: (hashes: vec blob) -> (vec bool) query;
+  _immutableObjectStorageBlobsToDelete: () -> (vec blob) query;
+  _immutableObjectStorageConfirmBlobDeletion: (blobs: vec blob) -> ();
+  _immutableObjectStorageCreateCertificate: (blobHash: text) ->
+   (_ImmutableObjectStorageCreateCertificateResult);
+  _immutableObjectStorageRefillCashier: (refillInformation:
+   opt _ImmutableObjectStorageRefillInformation) ->
+   (_ImmutableObjectStorageRefillResult);
+  _immutableObjectStorageUpdateGatewayPrincipals: () -> ();
+  addProduct: (title: text, description: text, price: nat, category:
+   ProductCategory, image: ExternalBlob, quantity: nat) -> (ProductId);
+  approveProduct: (id: ProductId) -> (bool);
+  approveSeller: (sellerId: UserId) -> (bool);
+  cancelOrder: (id: OrderId) -> (bool);
+  deleteMyProduct: (id: ProductId) -> (bool);
+  editProduct: (id: ProductId, title: text, description: text, price: 
+   nat, category: ProductCategory, image: ExternalBlob, quantity: nat) ->
+   (bool);
+  filterProductsByCategory: (category: ProductCategory) ->
+   (vec Product) query;
+  getFeaturedProducts: (limit: nat) -> (vec Product) query;
+  getMyProfile: () -> (opt UserProfile) query;
+  getMySellerProfile: () -> (opt SellerProfile) query;
+  getOrder: (id: OrderId) -> (opt Order) query;
+  getProduct: (id: ProductId) -> (opt Product) query;
+  getSellerProfile: (sellerId: UserId) -> (opt SellerProfile) query;
+  getSellerRevenue: () -> (nat) query;
+  getUserProfile: (userId: UserId) -> (opt UserProfile) query;
+  isApprovedSeller: ("principal": UserId) -> (bool) query;
+  listAllProducts: () -> (vec Product) query;
+  listAllUsers: () -> (vec UserProfile) query;
+  listApprovedProducts: () -> (vec Product) query;
+  listMyOrders: () -> (vec Order) query;
+  listMyProducts: () -> (vec Product) query;
+  listPendingProducts: () -> (vec Product) query;
+  listPendingSellers: () -> (vec SellerProfile) query;
+  listSellerOrders: () -> (vec Order) query;
+  placeOrder: (items: vec OrderItem, deliveryAddress: text) -> (OrderId);
+  registerAsSeller: (businessName: text, description: text) -> (bool);
+  registerUser: (name: text, email: text) -> (bool);
+  rejectProduct: (id: ProductId) -> (bool);
+  rejectSeller: (sellerId: UserId) -> (bool);
+  searchProducts: (keyword: text) -> (vec Product) query;
+  updateOrderStatus: (id: OrderId, status: OrderStatus) -> (bool);
+}

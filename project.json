@@ -1,0 +1,24 @@
+{
+  "overview": "A full-featured marketplace platform inspired by Jumia. Buyers browse a product catalog with categories, search, and detailed product pages. A persistent shopping cart leads to a checkout flow that creates real orders in the backend. Sellers manage their storefronts — listing products, tracking inventory, and fulfilling orders. An admin panel moderates the platform by approving sellers and products before they go live.",
+  "features": [
+    "Product catalog with category browsing, search, and product detail pages with images",
+    "Persistent shopping cart with checkout flow and order confirmation",
+    "Seller dashboard to list products, manage inventory, and track orders",
+    "Buyer account with order history and real-time status updates",
+    "Admin panel to approve sellers and products before they go live",
+    "Role-based access control via Internet Identity (buyer, seller, admin)",
+    "Product image uploads via object storage"
+  ],
+  "category": "marketplace",
+  "tags": [
+    "marketplace",
+    "ecommerce",
+    "jumia",
+    "shopping",
+    "seller",
+    "admin",
+    "catalog",
+    "orders"
+  ],
+  "last_updated": "2026-05-02T17:38:58.065Z"
+}
